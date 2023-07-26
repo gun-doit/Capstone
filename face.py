@@ -243,10 +243,6 @@ def Face_color(face_img):
     #thickness = 1  # 사각형 두께
     #cv2.rectangle(face_img, (x1, y1), (x2, y2), color, thickness)
     face_img = face_img[y1:y2, x1:x2]
-
-    # 사각형이 그려진 이미지를 저장합니다.
-    FACEVIDEO_R_IMWRITER = ROOT_DIR + "/image/face_with_rectangle.jpg"
-    cv2.imwrite(FACEVIDEO_R_IMWRITER, cv2.flip(face_img,1))
     
     face_img_ycrcb = cv2.cvtColor(face_img, cv2.COLOR_BGR2YCrCb)
 
