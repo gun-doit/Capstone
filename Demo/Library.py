@@ -15,6 +15,7 @@ from multiprocessing import Process
 import threading
 import os
 import tkinter as tk
+import sys
 
 # 생성한 라이브러리
 # from Library import *
@@ -26,8 +27,8 @@ import tkinter as tk
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 GUIDELINE = cv2.imread(ROOT_DIR + '/image/GuideLine.png')
 FACE_GUIDELINE = cv2.imread(ROOT_DIR + '/image/face_guideline_head.png')
-WIDTH = 272
-HEIGHT = 460
+WIDTH = 640
+HEIGHT = 480
 COUNTOUT = 60
 N_SECONDS = 2
 PI = math.pi
@@ -128,6 +129,9 @@ P_SCORE_I = Str()
 
 SUM_LPEL = Pos()
 SUM_RPEL = Pos()
+
+FC_LEFT_END = Pos()
+FC_RIGHT_END = Pos()
 
 DATA = [('Face_lr', F_SCORE_LR_I.guide),('Face_center', F_SCORE_CENTER_I.guide), ('Shoulder', S_SCORE_I.guide), ('test1', 67), ('test2', 22)]
 
