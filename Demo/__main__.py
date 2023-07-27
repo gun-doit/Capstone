@@ -3,6 +3,9 @@ from tkinter import ttk
 from Library import *
 from media import *
 from result import *
+from walking import *
+from face_color import *
+
 from PIL import ImageTk, Image
 from tkcalendar import DateEntry
 from dataclasses import dataclass
@@ -61,7 +64,7 @@ def MoveScreen(self,Move):
 
 class SpiderChart(Canvas):
     #a canvas that displays datapoints as a SpiderChart
-    DATA = [('Face_lr', F_SCORE_LR_I.guide),('Face_center', F_SCORE_CENTER_I.guide), ('Shoulder', S_SCORE_I.guide), ('test1', 67), ('test2', 22)]
+    DATA = [('Face_lr', F_SCORE_LR_I.guide),('Face_center', F_SCORE_CENTER_I.guide), ('Shoulder', S_SCORE_I.guide), ('Face_color', 67), ('Walk', 22)]
     print(F_SCORE_CENTER_I, S_SCORE_I, F_SCORE_LR_I)
     width = 280
     height = 280
@@ -470,15 +473,21 @@ class HomeScreen(Frame):
         self.face_lbl.bind("<Button-1>", lambda event :self.onclick(event,'REPORT_FACE'))
         self.face_lbl.place(x=287,y=111, width=100, height=100)
         
+        self.fcolor = image2photo(IMAGE_DIR+'피부색.png', (100,100))
+        self.fcolor_lbl = Label(self, image=self.fcolor, bg=BASE_BG, bd=0, relief="flat")
+        self.fcolor_lbl.bind("<Button-1>", lambda event :self.onclick(event,'REPORT_FACE_COLOR'))
+        self.fcolor_lbl.place(x=177,y=223, width=100, height=100)
+        
+        self.walk = image2photo(IMAGE_DIR+'보행.png', (100,100))
+        self.walk_lbl = Label(self, image=self.walk, bg=BASE_BG, bd=0, relief="flat")
+        self.walk_lbl.bind("<Button-1>", lambda event :self.onclick(event,'REPORT_WALKING'))
+        self.walk_lbl.place(x=287,y=223, width=100, height=100)
+        
         self.img1 = image2photo(IMAGE_DIR+'하늘색.png', (100,100))
         self.img2 = image2photo(IMAGE_DIR+'파란색.png', (100,100))
-        self.lbl3 = Label(self, image=self.img1, bg=BASE_BG, bd=0, relief="flat")
         self.lbl4 = Label(self, image=self.img2, bg=BASE_BG, bd=0, relief="flat")
-        self.lbl5 = Label(self, image=self.img2, bg=BASE_BG, bd=0, relief="flat")
         self.lbl6 = Label(self, image=self.img1, bg=BASE_BG, bd=0, relief="flat")
-        self.lbl3.place(x=177,y=223,width=100,height=100)
         self.lbl4.place(x=177,y=331,width=100,height=100)
-        self.lbl5.place(x=287,y=223,width=100,height=100)
         self.lbl6.place(x=287,y=331,width=100,height=100)
         '''#임시 버튼
         self.button = Button(self, text='임시 버튼',command=lambda :MoveScreen(self,'LOGIN'))
@@ -486,54 +495,11 @@ class HomeScreen(Frame):
 
     def onclick(self,event,To):
         MoveScreen(self,To)
-        
-'''################################ Video Screen ############################
-class ShoulderScreen(Frame):            
-    def __init__(self, master):
-        super().__init__(master)
-        #set Screen
-        self.config(background=BASE_BG)
-        self.templbl = Label(self, text='가이드 라인')
-        self.templbl.place(x=181,y=61, width=269, height=38)
-        
-        #end button
-        self.back = image2photo(IMAGE_DIR+'small_back.png', (100,40))
-        self.backBtn = Label(self, text='', image=self.back, bg=BASE_BG, bd=0, relief="flat")
-        self.backBtn.bind('<Button-1>', lambda event: self.onclick(event,'HOME'))
-        self.backBtn.place(x=32, y=415, width=100, height=40)
-        
-        
-        #end button
-        self.button = Button(self, text='임시 측정 완료', command=lambda :MoveScreen(self,'REPORT_1'))
-        self.button.place(x=400, y=415, width=100, height=40)
-        
-    def onclick(self,event,To):
-        MoveScreen(self,To)
-        
-class FaceScreen(Frame):            
-    def __init__(self, master):
-        super().__init__(master)
-        #set Screen
-        self.config(background=BASE_BG)
-        self.templbl = Label(self, text='가이드 라인')
-        self.templbl.place(x=181,y=61, width=269, height=38)
-        
-        
-        #back button
-        self.back = image2photo(IMAGE_DIR+'small_back.png', (100,40))
-        self.backBtn = Label(self, text='', image=self.back, bg=BASE_BG, bd=0, relief="flat")
-        self.backBtn.bind('<Button-1>', lambda event: self.onclick(event,'HOME'))
-        self.backBtn.place(x=32, y=415, width=100, height=40)
-        
-        #end button
-        self.button = Button(self, text='임시 측정 완료', command=lambda :MoveScreen(self,'REPORT_2'))
-        self.button.place(x=400, y=415, width=100, height=40)
-        
-    def onclick(self,event,To):
-        MoveScreen(self,To)'''
 
 
 ################################ Report Screen ############################
+
+#어깨 측정 및 결과
 class ReportShoulderScreen(Frame):
     def __init__(self, master):
         super().__init__(master)
@@ -583,7 +549,8 @@ class ReportShoulderScreen(Frame):
     
     def onclick(self,event,To):
         MoveScreen(self,To)
-            
+
+#얼굴 측정 및 결과            
 class ReportFaceScreen(Frame):
     def __init__(self, master):
         super().__init__(master)
@@ -640,7 +607,129 @@ class ReportFaceScreen(Frame):
 
     def onclick(self,event,To):
         MoveScreen(self,To)
+
+#얼굴 안색 측정 및 결과
+class ReportFaceColorScreen(Frame):
+    def __init__(self, master):
+        super().__init__(master)
+        #set Screen)
+        self.config(background=BASE_BG)
+        
+        #User data
+        photo = image2photo(IMAGE_DIR+'토끼.png', (60,60))
+        self.User_lbl = Label(self, background=BASE_BG,text='{User} 님의 피부 색 측정 결과'.format(User='사용자'),image=photo, compound=LEFT, padx=10, font='Arial 12')
+        self.User_lbl.photo = photo
+        self.User_lbl.place(x=136,y=33, width=368, height=60)
+        
+        #report
+        def re_start_FC(event):
+            PIPELINE.start(CONFIG)
+            Media_FaceColor()
+            cv2.destroyAllWindows()
+            PIPELINE.stop()
             
+            Face_Color_Image_result()
+            
+            label_text_Face_Color = RGB_COLOR.guide
+            
+            label_text = f"얼굴 평균 RGB COLOR: {label_text_Face_Color}\n" # 라벨 생성 및 텍스트 설정
+            
+            image_path = 'C:/lab/Demo/image/rgb_color_output.jpg'
+
+            # PIL 이미지로 변환
+            pil_image = Image.open(image_path)
+            # ImageTk.PhotoImage 객체 생성
+            self.image_tk = ImageTk.PhotoImage(pil_image)
+                           
+            self.report = Label(self,background='#D9D9D9', text=label_text, compound=tk.TOP, padx=10, font='Arial 12', anchor=tk.N)
+            self.report.place(x=136,y=103, width=368, height=291)
+            # Label 위젯에 PIL 이미지를 표시
+            self.report = tk.Label(self, image=self.image_tk, compound=tk.TOP, padx=10)
+            self.report.place(x=234, y=199, width=171, height=114)
+        
+        #result button
+        self.resultF = image2photo(IMAGE_DIR+'결과보기.png', (100,30))
+        self.resultFBtn = Label(self, text='', image=self.resultF, bg=BASE_BG, bd=0, relief="flat")
+        self.resultFBtn.bind('<Button-1>', re_start_FC)
+        self.resultFBtn.place(x=270, y=354, width=100, height=30)
+        
+        #home button
+        self.home = image2photo(IMAGE_DIR+'big_home.png', (150,40))
+        self.homeBtn = Label(self, text='', image=self.home, bg=BASE_BG, bd=0, relief="flat")
+        self.homeBtn.bind('<Button-1>', lambda event: self.onclick(event,'HOME'))
+        self.homeBtn.place(x=136, y=415, width=150, height=40)
+        
+        #report button
+        self.finalreport = image2photo(IMAGE_DIR+'종합 결과.png', (150,40))
+        self.finalreportBtn = Label(self, text='', image=self.finalreport, bg=BASE_BG, bd=0, relief="flat")
+        self.finalreportBtn.bind('<Button-1>', lambda event: self.onclick(event,'REPORT_1'))
+        self.finalreportBtn.place(x=354, y=415, width=150, height=40)
+
+    def onclick(self,event,To):
+        MoveScreen(self,To)
+        
+#보행 측정 및 결과
+class ReportWalkingScreen(Frame):
+    def __init__(self, master):
+        super().__init__(master)
+        #set Screen)
+        self.config(background=BASE_BG)
+        
+        #User data
+        photo = image2photo(IMAGE_DIR+'토끼.png', (60,60))
+        self.User_lbl = Label(self, background=BASE_BG,text='{User} 님의 보행 측정 결과'.format(User='사용자'),image=photo, compound=LEFT, padx=10, font='Arial 12')
+        self.User_lbl.photo = photo
+        self.User_lbl.place(x=136,y=33, width=368, height=60)
+        
+        #report
+        def re_start_Walk(event):
+            PIPELINE.start(CONFIG)
+            Media_Step()
+            cv2.destroyAllWindows()
+            PIPELINE.stop()
+            
+            One_Step()
+            Step_Video_result()
+            
+            """if(FC_LR_TEXT.guide != '대칭' or FC_CENTER_TEXT.guide != '대칭'):
+                label_text_F_TEXT = F_TEXT.guide  # 텍스트 문자열 생성
+            label_text_FA_TEXT = FA_TEXT.guide
+            label_text_FC_LR_TEXT = FC_LR_TEXT.guide
+            label_text_FC_CENTER_TEXT = FC_CENTER_TEXT.guide
+            label_text_F_SCORE_LR = F_SCORE_LR.guide
+            label_text_F_SCORE_CENTER = F_SCORE_CENTER.guide
+            if(FC_LR_TEXT.guide != '대칭' or FC_CENTER_TEXT.guide != '대칭'):
+                label_text = f"얼굴비대칭: {label_text_F_TEXT}\n눈과입의각도: {label_text_FA_TEXT}\n좌우 안면비대칭: {label_text_FC_LR_TEXT}\n중앙 안면비대칭: {label_text_FC_CENTER_TEXT}\n좌우안면점수: {label_text_F_SCORE_LR}\n중앙안면점수: {label_text_F_SCORE_CENTER}" # 라벨 생성 및 텍스트 설정
+            else:
+               label_text = f"눈과입의각도: {label_text_FA_TEXT}\n좌우 안면비대칭: {label_text_FC_LR_TEXT}\n중앙 안면비대칭: {label_text_FC_CENTER_TEXT}\n좌우안면점수: {label_text_F_SCORE_LR}\n중앙안면점수: {label_text_F_SCORE_CENTER}" # 라벨 생성 및 텍스트 설정 
+                
+            self.report = Label(self,background='#D9D9D9', text=label_text, compound=TOP, padx=10, font='Arial 12')
+            self.report.place(x=136,y=103, width=368, height=291)"""
+        
+        #result button
+        self.resultF = image2photo(IMAGE_DIR+'결과보기.png', (100,30))
+        self.resultFBtn = Label(self, text='', image=self.resultF, bg=BASE_BG, bd=0, relief="flat")
+        self.resultFBtn.bind('<Button-1>', re_start_Walk)
+        self.resultFBtn.place(x=270, y=354, width=100, height=30)
+        
+        #home button
+        self.home = image2photo(IMAGE_DIR+'big_home.png', (150,40))
+        self.homeBtn = Label(self, text='', image=self.home, bg=BASE_BG, bd=0, relief="flat")
+        self.homeBtn.bind('<Button-1>', lambda event: self.onclick(event,'HOME'))
+        self.homeBtn.place(x=136, y=415, width=150, height=40)
+        
+        #report button
+        self.finalreport = image2photo(IMAGE_DIR+'종합 결과.png', (150,40))
+        self.finalreportBtn = Label(self, text='', image=self.finalreport, bg=BASE_BG, bd=0, relief="flat")
+        self.finalreportBtn.bind('<Button-1>', lambda event: self.onclick(event,'REPORT_1'))
+        self.finalreportBtn.place(x=354, y=415, width=150, height=40)
+
+    def onclick(self,event,To):
+        MoveScreen(self,To) 
+
+
+               
+#전체 스파이더차트 결과            
 class ReportScreen_1(Frame):            
     def __init__(self, master):
         super().__init__(master)
@@ -682,7 +771,8 @@ class ReportScreen_1(Frame):
         
     def onclick(self,event,To):
         MoveScreen(self,To)
-            
+
+#전체 그래프 결과            
 class ReportScreen_2(Frame):            
     def __init__(self, master):
         super().__init__(master)
@@ -766,15 +856,17 @@ class MainWindow(Tk):
             "TERMS": TermsScreen(self),
             "CHARACTER": CharacterScreen(self),
             "HOME": HomeScreen(self),
-            #"VIDEO_SHOULDER": ShoulderScreen(self),
-            #"VIDEO_FACE" : FaceScreen(self),
+            
             "REPORT_1" : ReportScreen_1(self),
             "REPORT_2" : ReportScreen_2(self),
             "REPORT_SHOULDER" : ReportShoulderScreen(self),
             "REPORT_FACE" : ReportFaceScreen(self),
+            "REPORT_FACE_COLOR" : ReportFaceColorScreen(self),
+            "REPORT_WALKING" : ReportWalkingScreen(self),
             }
         #set first screen
         self.SCREEN['SELECTLANG'].place(x=0,y=0, width=640, height=480)
+        
 if __name__ == "__main__":
     window = MainWindow()
     window.mainloop()
