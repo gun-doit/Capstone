@@ -133,9 +133,12 @@ SUM_RPEL = Pos()
 FC_LEFT_END = Pos()
 FC_RIGHT_END = Pos()
 
+RGB_COLOR = Str()
+
 DATA = [('Face_lr', F_SCORE_LR_I.guide),('Face_center', F_SCORE_CENTER_I.guide), ('Shoulder', S_SCORE_I.guide), ('test1', 67), ('test2', 22)]
 
-
+FIRST_T = Pos()
+CUT_OFF_T = Pos()
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
