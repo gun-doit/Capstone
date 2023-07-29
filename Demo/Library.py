@@ -16,6 +16,9 @@ import threading
 import os
 import tkinter as tk
 import sys
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
 
 # 생성한 라이브러리
 # from Library import *
@@ -133,7 +136,13 @@ SUM_RPEL = Pos()
 FC_LEFT_END = Pos()
 FC_RIGHT_END = Pos()
 
+L_KNEE_DEG = Int()
+R_KNEE_DEG = Int()
+
 RGB_COLOR = Str()
+
+R_KNEE_LIST=[]
+L_KNEE_LIST=[]
 
 DATA = [('Face_lr', F_SCORE_LR_I.guide),('Face_center', F_SCORE_CENTER_I.guide), ('Shoulder', S_SCORE_I.guide), ('test1', 67), ('test2', 22)]
 
