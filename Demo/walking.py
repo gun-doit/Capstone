@@ -208,6 +208,7 @@ def Step_Video_result():
         if not success or frame.shape is not None:
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
             frame = cv2.resize(frame, (640,480))
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     
         if (FIRST_T.x <= i):
