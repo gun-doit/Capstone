@@ -690,21 +690,19 @@ class ReportWalkingScreen(Frame):
             
             One_Step()
             Step_Video_result()
+            Knee_Measure(CUT_OFF_T.x)
             
-            """if(FC_LR_TEXT.guide != '대칭' or FC_CENTER_TEXT.guide != '대칭'):
-                label_text_F_TEXT = F_TEXT.guide  # 텍스트 문자열 생성
-            label_text_FA_TEXT = FA_TEXT.guide
-            label_text_FC_LR_TEXT = FC_LR_TEXT.guide
-            label_text_FC_CENTER_TEXT = FC_CENTER_TEXT.guide
-            label_text_F_SCORE_LR = F_SCORE_LR.guide
-            label_text_F_SCORE_CENTER = F_SCORE_CENTER.guide
-            if(FC_LR_TEXT.guide != '대칭' or FC_CENTER_TEXT.guide != '대칭'):
-                label_text = f"얼굴비대칭: {label_text_F_TEXT}\n눈과입의각도: {label_text_FA_TEXT}\n좌우 안면비대칭: {label_text_FC_LR_TEXT}\n중앙 안면비대칭: {label_text_FC_CENTER_TEXT}\n좌우안면점수: {label_text_F_SCORE_LR}\n중앙안면점수: {label_text_F_SCORE_CENTER}" # 라벨 생성 및 텍스트 설정
-            else:
-               label_text = f"눈과입의각도: {label_text_FA_TEXT}\n좌우 안면비대칭: {label_text_FC_LR_TEXT}\n중앙 안면비대칭: {label_text_FC_CENTER_TEXT}\n좌우안면점수: {label_text_F_SCORE_LR}\n중앙안면점수: {label_text_F_SCORE_CENTER}" # 라벨 생성 및 텍스트 설정 
-                
-            self.report = Label(self,background='#D9D9D9', text=label_text, compound=TOP, padx=10, font='Arial 12')
-            self.report.place(x=136,y=103, width=368, height=291)"""
+            image_path = 'C:/lab/Demo/image/grape_image.jpg'
+
+            # PIL 이미지로 변환
+            pil_image = Image.open(image_path)
+            # ImageTk.PhotoImage 객체 생성
+            self.image_tk = ImageTk.PhotoImage(pil_image)
+                           
+            # Label 위젯에 PIL 이미지를 표시
+            self.report = tk.Label(self, image=self.image_tk, compound=tk.TOP, padx=10)
+            self.report.place(x=234, y=199, width=171, height=114)
+            
         
         #result button
         self.resultF = image2photo(IMAGE_DIR+'결과보기.png', (100,30))
