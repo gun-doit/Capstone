@@ -194,6 +194,48 @@ def One_Step():
             
         cap.release()       
 
+def Leg(Landmarks):
+    L_PEL.x, L_PEL.y = Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_HIP].x * WIDTH, Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_HIP].y * HEIGHT
+    R_PEL.x, R_PEL.y = Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_HIP].x * WIDTH, Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_HIP].y * HEIGHT
+    L_KNEE.x, L_KNEE.y = Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_KNEE].x * WIDTH, Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_KNEE].y * HEIGHT
+    R_KNEE.x, R_KNEE.y = Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_KNEE].x * WIDTH, Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_KNEE].y * HEIGHT
+    L_FOOT.x, L_FOOT.y = Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_ANKLE].x * WIDTH, Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_ANKLE].y * HEIGHT
+    R_FOOT.x, R_FOOT.y = Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ANKLE].x * WIDTH, Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ANKLE].y * HEIGHT
+
+#무릎 각도 재기
+def Leg_Angle(lax,lay,rax,ray,lhx,lhy,rhx,rhy,lkx,lky,rkx,rky):
+    la = np.array([lax,lay])
+    ra = np.array([rax,ray])
+    lh = np.array([lhx,lhy])
+    rh = np.array([rhx,rhy])
+    lk = np.array([lkx,lky])
+    rk = np.array([rkx,rky])
+    
+    R_thigh = rk - rh # 오른쪽 허벅지
+    L_thigh = lk - lh # 왼쪽 허벅지
+    R_calf = ra - rk # 오른쪽 종아리
+    L_calf = la - lk # 왼쪽 종아리
+    
+    norm_R_thigh = np.linalg.norm(R_thigh)
+    norm_L_thigh = np.linalg.norm(L_thigh)
+    norm_R_calf = np.linalg.norm(R_calf)
+    norm_L_calf = np.linalg.norm(L_calf)
+    
+    dot_R_KNEE = np.dot(R_thigh,R_calf)
+    dot_L_KNEE = np.dot(L_thigh,L_calf)
+
+    R_KNEE_cos_th = dot_R_KNEE / (norm_R_thigh * norm_R_calf)
+    L_KNEE_cos_th = dot_L_KNEE / (norm_L_thigh * norm_L_calf)
+    
+    R_KNEE_rad = math.acos(R_KNEE_cos_th)
+    R_KNEE_deg = math.degrees(R_KNEE_rad)
+    L_KNEE_rad = math.acos(L_KNEE_cos_th)
+    L_KNEE_deg = math.degrees(L_KNEE_rad)
+
+    R_KNEE_DEG.guide = 180 - R_KNEE_deg
+    L_KNEE_DEG.guide = 180 - L_KNEE_deg
+    R_KNEE_LIST.append(R_KNEE_DEG.guide)
+
 def Step_Video_result():
     # 자를 시간대까지의 프레임을 자르기 전 영상에 저장합니다.
     video_path = 'C:/lab/Demo/image/step.mp4'
@@ -219,3 +261,54 @@ def Step_Video_result():
     
     VIDEO_STEP_WRITER.release()
     cap.release()
+
+
+#무릎 각도 측정    
+def Knee_Measure(CUT_OFF_T):
+    video_path = 'C:\lab\Demo\image\one_step.mp4'
+    #파일 로드
+    cap = cv2.VideoCapture(video_path)
+    with mp_pose.Pose(min_detection_confidence=0.5,min_tracking_confidence=0.5) as pose:
+        i = 0
+        while cap.isOpened():
+            i+=1
+            success, frame = cap.read()
+            try:
+                if not success or frame.shape is not None:
+            
+                    HEIGHT, WIDTH, _ = frame.shape
+
+                    frame.flags.writeable = False
+                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    MP_landmark = pose.process(frame)
+                    frame.flags.writeable = True
+                    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+                    Leg(MP_landmark)
+                    Leg_Angle(L_FOOT.x,L_FOOT.y,R_FOOT.x,R_FOOT.y,L_PEL.x,L_PEL.y,R_PEL.x,R_PEL.y,L_KNEE.x,L_KNEE.y,R_KNEE.x,R_KNEE.y)
+
+                    check_ten = round(CUT_OFF_T / 10)
+            except:
+                x = []
+                j = round((len(R_KNEE_LIST) / (round(len(R_KNEE_LIST))/check_ten)))
+                for i in range (0, len(R_KNEE_LIST), j):
+                    x.append(round(R_KNEE_LIST[i]))
+                
+                y = np.arange(1, CUT_OFF_T, check_ten)
+
+                # 그래프 그리기
+                plt.plot(x, y)
+                plt.xlabel('X')
+                plt.ylabel('Y')
+                plt.title('grape')
+
+                # 그래프를 이미지로 저장
+                image_path = 'C:\lab\Demo\image\graph_image.jpg'
+                plt.savefig(image_path)
+
+                # 그래프 윈도우 닫기
+                plt.close()
+                
+                break
+            
+        cap.release() 
