@@ -207,6 +207,8 @@ def Step_Video_result():
         success, frame = cap.read()
         if not success or frame.shape is not None:
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+            frame = cv2.resize(frame, (640,480))
+
     
         if (FIRST_T.x <= i):
             VIDEO_STEP_WRITER.write(frame)
