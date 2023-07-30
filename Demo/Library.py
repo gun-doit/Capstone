@@ -16,9 +16,10 @@ import threading
 import os
 import tkinter as tk
 import sys
+from pandas import DataFrame
+import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
 
 # 생성한 라이브러리
 # from Library import *
@@ -28,7 +29,7 @@ import matplotlib.pyplot as plt
 
 ################################ 전역 변수 설정 ################################
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-GUIDELINE = cv2.imread(ROOT_DIR + '/image/GuideLine.png')
+GUIDELINE = cv2.imread('C:/Users/User/Desktop/new/image/GuideLine.png')
 FACE_GUIDELINE = cv2.imread(ROOT_DIR + '/image/face_guideline_head.png')
 WIDTH = 640
 HEIGHT = 480
@@ -88,6 +89,27 @@ NOSE_TIP = Pos()
 GLABELLA = Pos()
 MIDDLE = Pos()
 
+## 눈 가로 ##
+E_LEYE = Pos()
+F_LEYE = Pos()
+E_REYE = Pos()
+F_REYE = Pos()
+## 눈 세로 ##
+U_REYE = Pos()
+D_REYE = Pos()
+U_LEYE = Pos()
+D_LEYE = Pos()
+## 눈 가로세로 길이 ##
+HEI_REYE = Int()
+WID_REYE = Int()
+HEI_LEYE = Int()
+WID_LEYE = Int()
+
+HEI_REYE_TEXT = Str()
+WID_REYE_TEXT = Str()
+HEI_LEYE_TEXT = Str()
+WID_LEYE_TEXT = Str()
+
 SUM_LS = Pos()
 SUM_RS = Pos()
 
@@ -133,11 +155,12 @@ P_SCORE_I = Str()
 SUM_LPEL = Pos()
 SUM_RPEL = Pos()
 
-FC_LEFT_END = Pos()
-FC_RIGHT_END = Pos()
-
 L_KNEE_DEG = Int()
 R_KNEE_DEG = Int()
+
+
+FC_LEFT_END = Pos()
+FC_RIGHT_END = Pos()
 
 RGB_COLOR = Str()
 
@@ -148,6 +171,8 @@ DATA = [('Face_lr', F_SCORE_LR_I.guide),('Face_center', F_SCORE_CENTER_I.guide),
 
 FIRST_T = Pos()
 CUT_OFF_T = Pos()
+LEFT_EYE_AREA = Str()
+RIGHT_EYE_AREA = Str()
 
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
