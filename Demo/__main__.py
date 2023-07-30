@@ -5,6 +5,7 @@ from media import *
 from result import *
 from walking import *
 from face_color import *
+from eye_size import *
 
 from PIL import ImageTk, Image
 from tkcalendar import DateEntry
@@ -483,12 +484,15 @@ class HomeScreen(Frame):
         self.walk_lbl.bind("<Button-1>", lambda event :self.onclick(event,'REPORT_WALKING'))
         self.walk_lbl.place(x=287,y=223, width=100, height=100)
         
-        self.img1 = image2photo(IMAGE_DIR+'하늘색.png', (100,100))
+        self.eye = image2photo(IMAGE_DIR+'눈.png', (100,100))
+        self.eye_lbl = Label(self, image=self.eye, bg=BASE_BG, bd=0, relief="flat")
+        self.eye_lbl.bind("<Button-1>", lambda event :self.onclick(event,'REPORT_EYE'))
+        self.eye_lbl.place(x=287,y=331,width=100,height=100)
+
         self.img2 = image2photo(IMAGE_DIR+'파란색.png', (100,100))
         self.lbl4 = Label(self, image=self.img2, bg=BASE_BG, bd=0, relief="flat")
-        self.lbl6 = Label(self, image=self.img1, bg=BASE_BG, bd=0, relief="flat")
         self.lbl4.place(x=177,y=331,width=100,height=100)
-        self.lbl6.place(x=287,y=331,width=100,height=100)
+        
         '''#임시 버튼
         self.button = Button(self, text='임시 버튼',command=lambda :MoveScreen(self,'LOGIN'))
         self.button.place(x=0,y=0, width=100, height=10)'''
@@ -725,7 +729,61 @@ class ReportWalkingScreen(Frame):
     def onclick(self,event,To):
         MoveScreen(self,To) 
 
+#눈 크기 측정 및 결과
+class ReportEyeScreen(Frame):
+    def __init__(self, master):
+        super().__init__(master)
+        #set Screen)
+        self.config(background=BASE_BG)
+        
+        #User data
+        photo = image2photo(IMAGE_DIR+'토끼.png', (60,60))
+        self.User_lbl = Label(self, background=BASE_BG,text='{User} 님의 눈 크기 측정 결과'.format(User='사용자'),image=photo, compound=LEFT, padx=10, font='Arial 12')
+        self.User_lbl.photo = photo
+        self.User_lbl.place(x=136,y=33, width=368, height=60)
+        
+        #report
+        def re_start_Eye(event):
+            PIPELINE.start(CONFIG)
+            Media_Eye()
+            cv2.destroyAllWindows()
+            PIPELINE.stop()
+            
+            Eye_Size()
+            eyes_area()
+            
+            label_text_R_EYE_HEI_TEXT = HEI_REYE_TEXT.guide
+            label_text_R_EYE_WID_TEXT = WID_REYE_TEXT.guide
+            label_text_L_EYE_HEI_TEXT = HEI_LEYE_TEXT.guide
+            label_text_L_EYE_WID_TEXT = WID_LEYE_TEXT.guide
+            label_text_left_eye_area_TEXT = LEFT_EYE_AREA.guide
+            label_text_right_eye_area_TEXT = RIGHT_EYE_AREA.guide
+            label_text = f"오른쪽 눈 높이: {label_text_R_EYE_HEI_TEXT}\n오른쪽 눈 너비: {label_text_R_EYE_WID_TEXT}\n왼쪽 눈 높이: {label_text_L_EYE_HEI_TEXT}\n왼쪽 눈 너비: {label_text_L_EYE_WID_TEXT}\n왼쪽 눈 영역: {label_text_left_eye_area_TEXT}\n오른쪽 눈 영역: {label_text_right_eye_area_TEXT}"
+            
+            self.report = Label(self,background='#D9D9D9', text=label_text, compound=TOP, padx=10, font='Arial 12')
+            self.report.place(x=136,y=103, width=368, height=291)
+            
+        
+        #result button
+        self.resultF = image2photo(IMAGE_DIR+'결과보기.png', (100,30))
+        self.resultFBtn = Label(self, text='', image=self.resultF, bg=BASE_BG, bd=0, relief="flat")
+        self.resultFBtn.bind('<Button-1>', re_start_Eye)
+        self.resultFBtn.place(x=270, y=354, width=100, height=30)
+        
+        #home button
+        self.home = image2photo(IMAGE_DIR+'big_home.png', (150,40))
+        self.homeBtn = Label(self, text='', image=self.home, bg=BASE_BG, bd=0, relief="flat")
+        self.homeBtn.bind('<Button-1>', lambda event: self.onclick(event,'HOME'))
+        self.homeBtn.place(x=136, y=415, width=150, height=40)
+        
+        #report button
+        self.finalreport = image2photo(IMAGE_DIR+'종합 결과.png', (150,40))
+        self.finalreportBtn = Label(self, text='', image=self.finalreport, bg=BASE_BG, bd=0, relief="flat")
+        self.finalreportBtn.bind('<Button-1>', lambda event: self.onclick(event,'REPORT_1'))
+        self.finalreportBtn.place(x=354, y=415, width=150, height=40)
 
+    def onclick(self,event,To):
+        MoveScreen(self,To) 
                
 #전체 스파이더차트 결과            
 class ReportScreen_1(Frame):            
@@ -861,6 +919,7 @@ class MainWindow(Tk):
             "REPORT_FACE" : ReportFaceScreen(self),
             "REPORT_FACE_COLOR" : ReportFaceColorScreen(self),
             "REPORT_WALKING" : ReportWalkingScreen(self),
+            "REPORT_EYE" : ReportEyeScreen(self)
             }
         #set first screen
         self.SCREEN['SELECTLANG'].place(x=0,y=0, width=640, height=480)
