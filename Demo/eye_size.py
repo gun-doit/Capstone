@@ -317,7 +317,7 @@ def Eye_Size():
 
 def triangle_area(loc1,loc2,loc3):
     #loc -> x, y
-    area = abs((loc1.x*(loc2.y-loc3.y) + loc2.x*(loc3.y-loc1.y) + loc3.x*(loc1.y-loc2.y)) / 2 )
+    area = abs((loc1.x*640*(loc2.y*480-loc3.y*480) + loc2.x*640*(loc3.y*480-loc1.y*480) + loc3.x*640*(loc1.y*480-loc2.y*480)) / 2 )
     return area
 
 def eyes_area():
@@ -383,6 +383,7 @@ def eyes_area():
                 for landmark in right_eye_landmarks:
                     x, y = int(landmark.x * image_width), int(landmark.y * image_height)
                     cv2.circle(image, (x, y), 3, (0, 255, 0), -1)  # 점의 크기와 색상 설정
+
                 # 눈의 넓이 계산
                 left_eye_area = 0.0
                 for i in LEFT_EYE_LOC:
