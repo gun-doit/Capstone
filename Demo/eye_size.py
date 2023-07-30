@@ -396,6 +396,6 @@ def eyes_area():
         # 결과 이미지 저장 (옵션)
         #cv2.imwrite("D:/Capstone/code/src/output_image.png", image)
 
-        LEFT_EYE_AREA.guide = left_eye_area
-        RIGHT_EYE_AREA.guide = right_eye_area
+        LEFT_EYE_AREA.guide = round(left_eye_area)
+        RIGHT_EYE_AREA.guide = round(right_eye_area)
             
