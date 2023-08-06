@@ -634,22 +634,28 @@ class ReportFaceColorScreen(Frame):
             
             Face_Color_Image_result()
             
-            label_text_Face_Color = RGB_COLOR.guide
+            label_text_Face_Color1 = RGB_COLOR1.guide
+            label_text_Face_Color2 = RGB_COLOR2.guide
             
-            label_text = f"얼굴 평균 RGB COLOR: {label_text_Face_Color}\n" # 라벨 생성 및 텍스트 설정
+            label_text = f"얼굴 평균 RGB COLOR:\n 왼쪽얼굴: {label_text_Face_Color1}\n 오른쪽 얼굴: {label_text_Face_Color2}" # 라벨 생성 및 텍스트 설정
             
-            image_path = 'C:/lab/Demo/image/rgb_color_output.jpg'
+            image_path1 = 'C:/Users/User/Desktop/new/image/rgb_color_output1.jpg'
+            image_path2 = 'C:/Users/User/Desktop/new/image/rgb_color_output1.jpg'
 
             # PIL 이미지로 변환
-            pil_image = Image.open(image_path)
+            pil_image1 = Image.open(image_path1)
+            pil_image2 = Image.open(image_path2)
             # ImageTk.PhotoImage 객체 생성
-            self.image_tk = ImageTk.PhotoImage(pil_image)
+            self.image_tk1 = ImageTk.PhotoImage(pil_image1)
+            self.image_tk2 = ImageTk.PhotoImage(pil_image2)
                            
             self.report = Label(self,background='#D9D9D9', text=label_text, compound=tk.TOP, padx=10, font='Arial 12', anchor=tk.N)
             self.report.place(x=136,y=103, width=368, height=291)
             # Label 위젯에 PIL 이미지를 표시
-            self.report = tk.Label(self, image=self.image_tk, compound=tk.TOP, padx=10)
-            self.report.place(x=234, y=199, width=171, height=114)
+            self.report = tk.Label(self, image=self.image_tk1, compound=tk.TOP, padx=10)
+            self.report.place(x=166, y=216, width=132, height=93)
+            self.report = tk.Label(self, image=self.image_tk2, compound=tk.TOP, padx=10)
+            self.report.place(x=346, y=216, width=132, height=93)
         
         #result button
         self.resultF = image2photo(IMAGE_DIR+'결과보기.png', (100,30))
