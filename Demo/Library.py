@@ -162,7 +162,8 @@ R_KNEE_DEG = Int()
 FC_LEFT_END = Pos()
 FC_RIGHT_END = Pos()
 
-RGB_COLOR = Str()
+RGB_COLOR1 = Str()
+RGB_COLOR2 = Str
 
 R_KNEE_LIST=[]
 L_KNEE_LIST=[]
