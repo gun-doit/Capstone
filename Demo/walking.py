@@ -1,6 +1,10 @@
+#깃헙에서 이미지 다운로드 필요!
+
 from Library import *
-FOOT_LIST = []
-TIME_LIST = []
+FOOT_LIST_L = []
+TIME_LIST_L = []
+FOOT_LIST_R = []
+TIME_LIST_R = []
 
 #측정
 def Step_guideline(Landmarks):
@@ -151,12 +155,16 @@ def save():
         
     return True
 
-def Step_pose(Landmarks):
+def Step_pose1(Landmarks):
     L_FOOT.x, L_FOOT.y = Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_ANKLE].x * WIDTH, Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_ANKLE].y * HEIGHT
-    FOOT_LIST.append(L_FOOT.x)
+    FOOT_LIST_L.append(L_FOOT.x)
+
+def Step_pose2(Landmarks):
+    R_FOOT.x, R_FOOT.y = Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ANKLE].x * WIDTH, Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ANKLE].y * HEIGHT
+    FOOT_LIST_R.append(R_FOOT.x)
     
-def One_Step():
-    video_path = 'C:/lab/Demo/image/step.mp4'
+def One_Step_L():
+    video_path = 'C:/Users/User/Desktop/new/image/step.mp4'
     #파일 로드
     cap = cv2.VideoCapture(video_path)
     with mp_pose.Pose(min_detection_confidence=0.5,min_tracking_confidence=0.5) as pose:
@@ -175,24 +183,66 @@ def One_Step():
                     frame.flags.writeable = True
                     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
                     
-                    Step_pose(MP_landmark)
-                    TIME_LIST.append(i)
+                    Step_pose1(MP_landmark)
+                    TIME_LIST_L.append(i)
                                                                                                                                                                                                                                                                                                  
             except:
                 li = []
-                for k in range(0, len(FOOT_LIST) -1):
-                    if(abs(FOOT_LIST[k] - FOOT_LIST[k+1]) < 10):
-                        li.append(TIME_LIST[k])
+                for k in range(0, len(FOOT_LIST_L) -1):
+                    if(abs(FOOT_LIST_L[k] - FOOT_LIST_L[k+1]) < 10):
+                        li.append(TIME_LIST_L[k])
                         lenli = len(li)
                         if((lenli > 2) and ((li[lenli-2] + 1) != li[lenli-1])):
                             li.pop()
-                            break                  
-                FIRST_T.x = li[0]
-                CUT_OFF_T.x = li[-1]
+                            break
+
+                FIRST_T_L.x = li[0]
+                CUT_OFF_T_L.x = li[-1]
                 
                 break
             
-        cap.release()       
+        cap.release()
+
+def One_Step_R():
+    video_path = 'C:/Users/User/Desktop/new/image/step.mp4'
+    #파일 로드
+    cap = cv2.VideoCapture(video_path)
+    with mp_pose.Pose(min_detection_confidence=0.5,min_tracking_confidence=0.5) as pose:
+        i = 0
+        while cap.isOpened():
+            i+=1
+            success, frame = cap.read()
+            try:
+                if not success or frame.shape is not None:
+            
+                    HEIGHT, WIDTH, _ = frame.shape
+
+                    frame.flags.writeable = False
+                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    MP_landmark = pose.process(frame)
+                    frame.flags.writeable = True
+                    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+                    
+                    Step_pose2(MP_landmark)
+                    TIME_LIST_R.append(i)
+                                                                                                                                                                                                                                                                                                 
+            except:
+                li = []
+                for k in range(CUT_OFF_T_L.x, len(FOOT_LIST_R) -1):
+                    if(abs(FOOT_LIST_R[k] - FOOT_LIST_R[k+1]) < 10):
+                        li.append(TIME_LIST_R[k])
+                        lenli = len(li)
+                        if((lenli > 50) and ((li[lenli-2] + 1) != li[lenli-1])):
+                            li.pop()
+                            break
+
+                FIRST_T_R.x = li[0]
+                CUT_OFF_T_R.x = li[-1]
+                
+                break
+            
+        cap.release()  
+
 
 def Leg(Landmarks):
     L_PEL.x, L_PEL.y = Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_HIP].x * WIDTH, Landmarks.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_HIP].y * HEIGHT
@@ -235,16 +285,17 @@ def Leg_Angle(lax,lay,rax,ray,lhx,lhy,rhx,rhy,lkx,lky,rkx,rky):
     R_KNEE_DEG.guide = 180 - R_KNEE_deg
     L_KNEE_DEG.guide = 180 - L_KNEE_deg
     R_KNEE_LIST.append(R_KNEE_DEG.guide)
+    L_KNEE_LIST.append(L_KNEE_DEG.guide)
 
-def Step_Video_result():
+def Step_Video_result_L():
     # 자를 시간대까지의 프레임을 자르기 전 영상에 저장합니다.
-    video_path = 'C:/lab/Demo/image/step.mp4'
+    video_path = 'C:/Users/User/Desktop/new/image/step.mp4'
     i = 0
     #파일 로드
     cap = cv2.VideoCapture(video_path)
-    VIDEO_STEP_WRITER = cv2.VideoWriter(ROOT_DIR + '/image/one_step.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 10, (640,480), isColor = True)
+    VIDEO_STEP_WRITER = cv2.VideoWriter(ROOT_DIR + '/image/one_step_L.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 10, (640,480), isColor = True)
     
-    while cap.isOpened() and i < CUT_OFF_T.x:
+    while cap.isOpened() and i < CUT_OFF_T_L.x:
         i+=1
         success, frame = cap.read()
         if not success or frame.shape is not None:
@@ -253,19 +304,39 @@ def Step_Video_result():
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     
-        if (FIRST_T.x <= i):
-            VIDEO_STEP_WRITER.write(frame)
-        
-        else:
-            break    
+        if (FIRST_T_L.x <= i):
+            VIDEO_STEP_WRITER.write(frame)  
+    
+    VIDEO_STEP_WRITER.release()
+    cap.release()
+
+def Step_Video_result_R():
+    # 자를 시간대까지의 프레임을 자르기 전 영상에 저장합니다.
+    video_path = 'C:/Users/User/Desktop/new/image/step.mp4'
+    i = 0
+    #파일 로드
+    cap = cv2.VideoCapture(video_path)
+    VIDEO_STEP_WRITER = cv2.VideoWriter(ROOT_DIR + '/image/one_step_R.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 10, (640,480), isColor = True)
+    
+    while cap.isOpened() and i < CUT_OFF_T_R.x:
+        i+=1
+        success, frame = cap.read()
+
+        if not success or frame.shape is not None:
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+            frame = cv2.resize(frame, (640,480))
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        if (FIRST_T_R.x <= i):
+            VIDEO_STEP_WRITER.write(frame)  
     
     VIDEO_STEP_WRITER.release()
     cap.release()
 
 
 #무릎 각도 측정    
-def Knee_Measure(CUT_OFF_T):
-    video_path = 'C:\lab\Demo\image\one_step.mp4'
+def Knee_Measure_L(CUT_OFF_T_L):
+    video_path = 'C:/Users/User/Desktop/new/image/one_step_L.mp4'
     #파일 로드
     cap = cv2.VideoCapture(video_path)
     with mp_pose.Pose(min_detection_confidence=0.5,min_tracking_confidence=0.5) as pose:
@@ -287,23 +358,28 @@ def Knee_Measure(CUT_OFF_T):
                     Leg(MP_landmark)
                     Leg_Angle(L_FOOT.x,L_FOOT.y,R_FOOT.x,R_FOOT.y,L_PEL.x,L_PEL.y,R_PEL.x,R_PEL.y,L_KNEE.x,L_KNEE.y,R_KNEE.x,R_KNEE.y)
 
-                    check_ten = round(CUT_OFF_T / 10)
+                    check_ten = round(CUT_OFF_T_L / 10)
+
             except:
                 x = []
                 j = round((len(R_KNEE_LIST) / (round(len(R_KNEE_LIST))/check_ten)))
                 for i in range (0, len(R_KNEE_LIST), j):
                     x.append(round(R_KNEE_LIST[i]))
                 
-                y = np.arange(1, CUT_OFF_T, check_ten)
+                y = np.arange(1, CUT_OFF_T_L, check_ten)
+                
+                desired_width_px = 368
+                desired_height_px = 219
+                dpi = 100  # 원하는 DPI 값 설정
+
+                fig = plt.figure(figsize=(desired_width_px / dpi, desired_height_px / dpi), dpi=dpi)
 
                 # 그래프 그리기
-                plt.plot(x, y)
-                plt.xlabel('X')
-                plt.ylabel('Y')
-                plt.title('grape')
+                ax = fig.add_subplot(1, 1, 1)
+                ax.plot(x, y)
 
                 # 그래프를 이미지로 저장
-                image_path = 'C:\lab\Demo\image\graph_image.jpg'
+                image_path = 'C:/Users/User/Desktop/new/image/graph_image_L.jpg'
                 plt.savefig(image_path)
 
                 # 그래프 윈도우 닫기
@@ -312,3 +388,57 @@ def Knee_Measure(CUT_OFF_T):
                 break
             
         cap.release() 
+
+def Knee_Measure_R(CUT_OFF_T_R):
+    video_path = 'C:/Users/User/Desktop/new/image/one_step_R.mp4'
+    #파일 로드
+    cap = cv2.VideoCapture(video_path)
+    with mp_pose.Pose(min_detection_confidence=0.5,min_tracking_confidence=0.5) as pose:
+        i = 0
+        while cap.isOpened():
+            i+=1
+            success, frame = cap.read()
+            try:
+                if not success or frame.shape is not None:
+            
+                    HEIGHT, WIDTH, _ = frame.shape
+
+                    frame.flags.writeable = False
+                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    MP_landmark = pose.process(frame)
+                    frame.flags.writeable = True
+                    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+                    Leg(MP_landmark)
+                    Leg_Angle(L_FOOT.x,L_FOOT.y,R_FOOT.x,R_FOOT.y,L_PEL.x,L_PEL.y,R_PEL.x,R_PEL.y,L_KNEE.x,L_KNEE.y,R_KNEE.x,R_KNEE.y)
+
+                    check_ten = round(CUT_OFF_T_R / 10)
+
+            except:
+                x = []
+                j = round((len(L_KNEE_LIST) / (round(len(L_KNEE_LIST))/check_ten)))
+                for i in range (0, len(L_KNEE_LIST), j):
+                    x.append(round(L_KNEE_LIST[i]))
+                
+                y = np.arange(1, CUT_OFF_T_R, check_ten)
+
+                desired_width_px = 368
+                desired_height_px = 219
+                dpi = 100  # 원하는 DPI 값 설정
+
+                fig = plt.figure(figsize=(desired_width_px / dpi, desired_height_px / dpi), dpi=dpi)
+
+                # 그래프 그리기
+                ax = fig.add_subplot(1, 1, 1)
+                ax.plot(x, y)
+
+                # 그래프를 이미지로 저장
+                image_path = 'C:/Users/User/Desktop/new/image/graph_image_R.jpg'
+                plt.savefig(image_path)
+
+                # 그래프 윈도우 닫기
+                plt.close()
+                
+                break
+            
+        cap.release()
