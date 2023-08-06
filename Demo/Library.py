@@ -170,8 +170,11 @@ L_KNEE_LIST=[]
 
 DATA = [('Face_lr', F_SCORE_LR_I.guide),('Face_center', F_SCORE_CENTER_I.guide), ('Shoulder', S_SCORE_I.guide), ('test1', 67), ('test2', 22)]
 
-FIRST_T = Pos()
-CUT_OFF_T = Pos()
+FIRST_T_L = Pos()
+CUT_OFF_T_L = Pos()
+FIRST_T_R = Pos()
+CUT_OFF_T_R = Pos()
+
 LEFT_EYE_AREA = Str()
 RIGHT_EYE_AREA = Str()
 
