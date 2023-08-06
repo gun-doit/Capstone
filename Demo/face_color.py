@@ -234,7 +234,8 @@ def Face_line(Landmarks, frame):
     return frame
 
 def Face_color(face_img):
-    FACEVIDEO_COLOR_IMWRITER = ROOT_DIR + '/image/rgb_color_output.jpg'
+    FACEVIDEO_LCOLOR_IMWRITER = ROOT_DIR + '/image/rgb_color_output1.jpg'
+    FACEVIDEO_RCOLOR_IMWRITER = ROOT_DIR + '/image/rgb_color_output2.jpg'
     
     x1 = FC_LEFT_END.x
     y1 = FORHEAD.y
@@ -256,26 +257,42 @@ def Face_color(face_img):
     skin = cv2.bitwise_and(face_img_ycrcb, face_img_ycrcb, mask = skin_msk)
     skin = cv2.cvtColor(skin, cv2.COLOR_YCrCb2BGR)
     
-    FACEVIDEO_R_IMWRITER = ROOT_DIR + "/image/face_rgb.jpg"
-    cv2.imwrite(FACEVIDEO_R_IMWRITER, cv2.flip(skin,1))
+    # skin 이미지를 절반으로 자르기
+    height, width, _ = skin.shape
+    half_width = width // 2
+    left_half = skin[:, :half_width]
+    right_half = skin[:, half_width:]
+
+    FACEVIDEO_left_IMWRITER = ROOT_DIR + "/image/face_rgb.jpg"
+    FACEVIDEO_right_IMWRITER = ROOT_DIR + "/image/face_rgb.jpg"
+    cv2.imwrite(FACEVIDEO_left_IMWRITER, cv2.flip(left_half,1))
+    cv2.imwrite(FACEVIDEO_right_IMWRITER, cv2.flip(right_half,1))
 
     # 이미지를 BGR에서 HSV로 변환합니다.
-    hsv_image = cv2.cvtColor(skin, cv2.COLOR_BGR2HSV)
+    hsv_image1 = cv2.cvtColor(left_half, cv2.COLOR_BGR2HSV)
+    hsv_image2 = cv2.cvtColor(right_half, cv2.COLOR_BGR2HSV)
 
     # 모든 픽셀의 색상 값을 평균하여 구합니다.
-    average_color = np.mean(hsv_image, axis=(0, 1))
+    average_color1= np.mean(hsv_image1, axis=(0, 1))
+    average_color2 = np.mean(hsv_image2, axis=(0, 1))
     
     # HSV 색상값을 BGR 컬러로 변환
-    bgr_color = cv2.cvtColor(np.array([[average_color]], dtype=np.uint8), cv2.COLOR_HSV2BGR)[0][0]
+    bgr_color1 = cv2.cvtColor(np.array([[average_color1]], dtype=np.uint8), cv2.COLOR_HSV2BGR)[0][0]
+    bgr_color2 = cv2.cvtColor(np.array([[average_color2]], dtype=np.uint8), cv2.COLOR_HSV2BGR)[0][0]
 
     # 단색 이미지 생성
-    color_image = np.zeros((640, 480, 3), dtype=np.uint8)
-    color_image[:, :] = bgr_color
+    color_image1 = np.zeros((640, 480, 3), dtype=np.uint8)
+    color_image1[:, :] = bgr_color1
+    color_image2 = np.zeros((640, 480, 3), dtype=np.uint8)
+    color_image2[:, :] = bgr_color2
 
-    cv2.imwrite(FACEVIDEO_COLOR_IMWRITER, cv2.flip(color_image,1))    
+    cv2.imwrite(FACEVIDEO_LCOLOR_IMWRITER, cv2.flip(color_image1,1))
+    cv2.imwrite(FACEVIDEO_RCOLOR_IMWRITER, cv2.flip(color_image2,1))    
     
     # BGR 컬러를 RGB로 변환
-    RGB_COLOR.guide = int(bgr_color[2]), int(bgr_color[1]), int(bgr_color[0])
+    RGB_COLOR1.guide = int(bgr_color1[2]), int(bgr_color1[1]), int(bgr_color1[0])
+    RGB_COLOR2.guide = int(bgr_color2[2]), int(bgr_color2[1]), int(bgr_color2[0])
+
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
@@ -283,7 +300,7 @@ def Face_color(face_img):
 #얼굴 사진 저장
 def Face_Color_Image_result():   
     # 이미지 파일 경로
-    image_path = 'C:/lab/Demo/image/face_color_output.jpg'
+    image_path = 'C:/Users/User/Desktop/new/image/face_color_output.jpg'
 
     # 이미지 파일 로드
     frame = cv2.imread(image_path)
@@ -301,5 +318,6 @@ def Face_Color_Image_result():
         frame = Face_line(FC_landmark, frame)
         
         Face_color(frame)
+
 
 
