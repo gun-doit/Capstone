@@ -691,27 +691,48 @@ class ReportWalkingScreen(Frame):
         self.User_lbl.photo = photo
         self.User_lbl.place(x=136,y=33, width=368, height=60)
         
+        label_text = f"주의사항: 오른쪽 발부터 내딛어주세요." # 라벨 생성 및 텍스트 설정
+        self.report = Label(self,background='#D9D9D9', text=label_text, compound=tk.TOP, padx=10, font='Arial 12', anchor=tk.N)
+
         #report
         def re_start_Walk(event):
-            PIPELINE.start(CONFIG)
-            Media_Step()
-            cv2.destroyAllWindows()
-            PIPELINE.stop()
+            #PIPELINE.start(CONFIG)
+            #Media_Step()
+            #cv2.destroyAllWindows()
+            #PIPELINE.stop()
             
-            One_Step()
-            Step_Video_result()
-            Knee_Measure(CUT_OFF_T.x)
-            
-            image_path = 'C:/lab/Demo/image/grape_image.jpg'
+            One_Step_L()
+            One_Step_R()
+            Step_Video_result_L()
+            Step_Video_result_R()
+            Knee_Measure_L(CUT_OFF_T_L.x)
+            Knee_Measure_R(CUT_OFF_T_R.x)
 
-            # PIL 이미지로 변환
-            pil_image = Image.open(image_path)
+            label_text = f"왼쪽 발, 오른쪽 발" # 라벨 생성 및 텍스트 설정
+
+            image_path1 = 'C:/Users/User/Desktop/new/image/graph_image_L.jpg'
+            image_path2 = 'C:/Users/User/Desktop/new/image/graph_image_R.jpg'
+
+            img1 = Image.open(image_path1)
+            img2 = Image.open(image_path2)
+
+            # 이미지 크기 조절
+            desired_width = 132
+            desired_height = 93
+            img1 = img1.resize((desired_width, desired_height))
+            img2 = img2.resize((desired_width, desired_height))
+
             # ImageTk.PhotoImage 객체 생성
-            self.image_tk = ImageTk.PhotoImage(pil_image)
-                           
+            self.image_tk1 = ImageTk.PhotoImage(img1)
+            self.image_tk2 = ImageTk.PhotoImage(img2)
+
+            self.report = Label(self,background='#D9D9D9', text=label_text, compound=tk.TOP, padx=10, font='Arial 12', anchor=tk.N)
+            self.report.place(x=136,y=103, width=368, height=291)               
             # Label 위젯에 PIL 이미지를 표시
-            self.report = tk.Label(self, image=self.image_tk, compound=tk.TOP, padx=10)
-            self.report.place(x=234, y=199, width=171, height=114)
+            self.report = tk.Label(self, image=self.image_tk1, compound=tk.TOP, padx=10)
+            self.report.place(x=166, y=216, width=132, height=93)
+            self.report = tk.Label(self, image=self.image_tk2, compound=tk.TOP, padx=10)
+            self.report.place(x=346, y=216, width=132, height=93)
             
         
         #result button
