@@ -263,8 +263,8 @@ def Face_color(face_img):
     left_half = skin[:, :half_width]
     right_half = skin[:, half_width:]
 
-    FACEVIDEO_left_IMWRITER = ROOT_DIR + "/image/face_rgb.jpg"
-    FACEVIDEO_right_IMWRITER = ROOT_DIR + "/image/face_rgb.jpg"
+    FACEVIDEO_left_IMWRITER = ROOT_DIR + "/image/face_rgb_left.jpg"
+    FACEVIDEO_right_IMWRITER = ROOT_DIR + "/image/face_rgb_right.jpg"
     cv2.imwrite(FACEVIDEO_left_IMWRITER, cv2.flip(left_half,1))
     cv2.imwrite(FACEVIDEO_right_IMWRITER, cv2.flip(right_half,1))
 
