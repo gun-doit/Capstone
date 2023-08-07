@@ -597,8 +597,8 @@ class ReportFaceColorScreen(Frame):
             
             label_text = f"얼굴 평균 RGB COLOR:\n 왼쪽얼굴: {label_text_Face_Color1}\n 오른쪽 얼굴: {label_text_Face_Color2}" # 라벨 생성 및 텍스트 설정
             
-            image_path1 = 'C:/Users/User/Desktop/new/image/rgb_color_output1.jpg'
-            image_path2 = 'C:/Users/User/Desktop/new/image/rgb_color_output1.jpg'
+            image_path1 = ROOT_DIR + '/image/rgb_color_output1.jpg'
+            image_path2 = ROOT_DIR + '/image/rgb_color_output2.jpg'
 
             # PIL 이미지로 변환
             pil_image1 = Image.open(image_path1)
@@ -654,10 +654,10 @@ class ReportWalkingScreen(Frame):
 
         #report
         def re_start_Walk(event):
-            #PIPELINE.start(CONFIG)
-            #Media_Step()
-            #cv2.destroyAllWindows()
-            #PIPELINE.stop()
+            PIPELINE.start(CONFIG)
+            Media_Step()
+            cv2.destroyAllWindows()
+            PIPELINE.stop()
             
             One_Step_L()
             One_Step_R()
@@ -668,8 +668,8 @@ class ReportWalkingScreen(Frame):
 
             label_text = f"왼쪽 발, 오른쪽 발" # 라벨 생성 및 텍스트 설정
 
-            image_path1 = 'C:/Users/User/Desktop/new/image/graph_image_L.jpg'
-            image_path2 = 'C:/Users/User/Desktop/new/image/graph_image_R.jpg'
+            image_path1 = ROOT_DIR + '/image/graph_image_L.jpg'
+            image_path2 = ROOT_DIR + '/image/graph_image_R.jpg'
 
             img1 = Image.open(image_path1)
             img2 = Image.open(image_path2)
