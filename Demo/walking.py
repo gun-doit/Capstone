@@ -164,7 +164,7 @@ def Step_pose2(Landmarks):
     FOOT_LIST_R.append(R_FOOT.x)
     
 def One_Step_L():
-    video_path = ROOT_DIR + '/image/step.mp4'
+    video_path = 'C:/Users/User/Desktop/new/image/step.mp4'
     #파일 로드
     cap = cv2.VideoCapture(video_path)
     with mp_pose.Pose(min_detection_confidence=0.5,min_tracking_confidence=0.5) as pose:
@@ -204,7 +204,7 @@ def One_Step_L():
         cap.release()
 
 def One_Step_R():
-    video_path = ROOT_DIR + '/image/step.mp4'
+    video_path = 'C:/Users/User/Desktop/new/image/step.mp4'
     #파일 로드
     cap = cv2.VideoCapture(video_path)
     with mp_pose.Pose(min_detection_confidence=0.5,min_tracking_confidence=0.5) as pose:
@@ -289,7 +289,7 @@ def Leg_Angle(lax,lay,rax,ray,lhx,lhy,rhx,rhy,lkx,lky,rkx,rky):
 
 def Step_Video_result_L():
     # 자를 시간대까지의 프레임을 자르기 전 영상에 저장합니다.
-    video_path = ROOT_DIR + '/image/step.mp4'
+    video_path = 'C:/Users/User/Desktop/new/image/step.mp4'
     i = 0
     #파일 로드
     cap = cv2.VideoCapture(video_path)
@@ -312,7 +312,7 @@ def Step_Video_result_L():
 
 def Step_Video_result_R():
     # 자를 시간대까지의 프레임을 자르기 전 영상에 저장합니다.
-    video_path = ROOT_DIR + '/image/step.mp4'
+    video_path = 'C:/Users/User/Desktop/new/image/step.mp4'
     i = 0
     #파일 로드
     cap = cv2.VideoCapture(video_path)
@@ -336,7 +336,7 @@ def Step_Video_result_R():
 
 #무릎 각도 측정    
 def Knee_Measure_L(CUT_OFF_T_L):
-    video_path = ROOT_DIR + '/image/one_step_L.mp4'
+    video_path = 'C:/Users/User/Desktop/new/image/one_step_L.mp4'
     #파일 로드
     cap = cv2.VideoCapture(video_path)
     with mp_pose.Pose(min_detection_confidence=0.5,min_tracking_confidence=0.5) as pose:
@@ -365,8 +365,14 @@ def Knee_Measure_L(CUT_OFF_T_L):
                 j = round((len(R_KNEE_LIST) / (round(len(R_KNEE_LIST))/check_ten)))
                 for i in range (0, len(R_KNEE_LIST), j):
                     x.append(round(R_KNEE_LIST[i]))
-                
+
                 y = np.arange(1, CUT_OFF_T_L, check_ten)
+
+                if((len(x)+1) == len(y)):
+                    y = y[:-1]
+                elif((len(x)-1) == len(y)):
+                    x = x[:-1]
+
                 
                 desired_width_px = 368
                 desired_height_px = 219
@@ -379,7 +385,7 @@ def Knee_Measure_L(CUT_OFF_T_L):
                 ax.plot(x, y)
 
                 # 그래프를 이미지로 저장
-                image_path = ROOT_DIR + '/image/graph_image_L.jpg'
+                image_path = 'C:/Users/User/Desktop/new/image/graph_image_L.jpg'
                 plt.savefig(image_path)
 
                 # 그래프 윈도우 닫기
@@ -390,7 +396,7 @@ def Knee_Measure_L(CUT_OFF_T_L):
         cap.release() 
 
 def Knee_Measure_R(CUT_OFF_T_R):
-    video_path = ROOT_DIR + '/image/one_step_R.mp4'
+    video_path = 'C:/Users/User/Desktop/new/image/one_step_R.mp4'
     #파일 로드
     cap = cv2.VideoCapture(video_path)
     with mp_pose.Pose(min_detection_confidence=0.5,min_tracking_confidence=0.5) as pose:
@@ -422,6 +428,12 @@ def Knee_Measure_R(CUT_OFF_T_R):
                 
                 y = np.arange(1, CUT_OFF_T_R, check_ten)
 
+                if((len(x)+1) == len(y)):
+                    y = y[:-1]
+                elif((len(x)-1) == len(y)):
+                    x = x[:-1]
+
+
                 desired_width_px = 368
                 desired_height_px = 219
                 dpi = 100  # 원하는 DPI 값 설정
@@ -433,7 +445,7 @@ def Knee_Measure_R(CUT_OFF_T_R):
                 ax.plot(x, y)
 
                 # 그래프를 이미지로 저장
-                image_path = ROOT_DIR + '/image/graph_image_R.jpg'
+                image_path = 'C:/Users/User/Desktop/new/image/graph_image_R.jpg'
                 plt.savefig(image_path)
 
                 # 그래프 윈도우 닫기
